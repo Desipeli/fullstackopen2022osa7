@@ -71,6 +71,12 @@ const CreateNew = (props) => {
     navigate('/')
   }
 
+  const handleReset = () => {
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -88,6 +94,7 @@ const CreateNew = (props) => {
           <input {...info} />
         </div>
         <button>create</button>
+        <button type="button" onClick={handleReset}>reset</button>
       </form>
     </div>
   )
@@ -102,7 +109,7 @@ const ShowAnecdote = ({ anecdote }) => {
   }
   return (
     <div style={{paddingTop: 30, paddingBottom: 20}}>
-      <span style={anecdoteStyle}>{anecdote ? anecdote.content: "Invalid id"}</span>
+      <span style={anecdoteStyle}>{anecdote ? `${anecdote.content} by ${anecdote.author}`: "Invalid id"}</span>
       <p style={{padding: 10}}>{`has ${anecdote.votes} votes`}</p>
     </div>
   )
