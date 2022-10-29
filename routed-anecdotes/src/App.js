@@ -56,15 +56,14 @@ const CreateNew = (props) => {
   const content = useField('text')
   const author = useField('text')
   const info = useField('text')
-
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content : content.value,
-      author: author.value,
-      info: info.value,
+      content : content.properties.value,
+      author: author.properties.value,
+      info: info.properties.value,
       votes: 0
     })
     props.setNotification(`Created: ${content.value}`)
@@ -83,15 +82,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content}/>
+          <input {...content.properties}/>
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...author.properties} />
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input {...info.properties} />
         </div>
         <button>create</button>
         <button type="button" onClick={handleReset}>reset</button>
