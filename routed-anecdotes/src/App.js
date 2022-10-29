@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 
 const Menu = () => {
 
@@ -9,7 +9,7 @@ const Menu = () => {
   return (
     <div>
       <Link style={padding} to="/">anecdotes</Link>
-      <Link style={padding} to="/create">create</Link>
+      <Link style={padding} to="/create">create new</Link>
       <Link style={padding} to="/about">about</Link>
     </div>
   )
@@ -19,7 +19,12 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => 
+      <li key={anecdote.id} >
+        <Link to={`/anecdotes/${anecdote.id}`}>
+        {anecdote.content}
+        </Link>
+        </li>)}
     </ul>
   </div>
 )
@@ -85,7 +90,22 @@ const CreateNew = (props) => {
 
 }
 
+const ShowAnecdote = ({ anecdote }) => {
+  const anecdoteStyle = {
+    padding: 10,
+    fontSize: "30px",
+    fontWeight: "bold"
+  }
+  return (
+    <div style={{paddingTop: 30, paddingBottom: 20}}>
+      <span style={anecdoteStyle}>{anecdote ? anecdote.content: "Invalid id"}</span>
+      <p style={{padding: 10}}>{`has ${anecdote.votes} votes`}</p>
+    </div>
+  )
+}
+
 const App = () => {
+
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -102,6 +122,11 @@ const App = () => {
       id: 2
     }
   ])
+
+  const match = useMatch('/anecdotes/:id')
+  const anecdote = match
+    ? anecdotes.find(a => a.id === Number(match.params.id))
+    :null
 
   const [notification, setNotification] = useState('')
 
@@ -132,6 +157,7 @@ const App = () => {
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path="create" element={<CreateNew addNew={addNew} />}/>
         <Route path="about" element={<About />} />
+        <Route path="/anecdotes/:id" element={<ShowAnecdote anecdote={anecdote} />} />
       </Routes>
       <Footer />
     </div>
