@@ -1,0 +1,29 @@
+.error {
+  color: red;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.notification {
+  color: green;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.blog {
+  border: 2px solid black;
+  margin: 10px 0 0;
+  padding: 10px 0 0;
+}
+
+.blog-first-row:hover {
+  cursor: pointer;
+}

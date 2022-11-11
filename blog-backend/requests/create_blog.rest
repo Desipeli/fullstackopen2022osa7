@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImvDpHl0dMOkasOkIiwiaWQiOiI2MmZmNGM4MTkzMDk3MzZiNjQzZDAxZDciLCJpYXQiOjE2NjA4OTk4NTd9.DO-ke2Q5YxEoLxZXPemg5CTkPmRLv9U5Kq7H6th_AmQ
+
+{
+    "title": "bloggi",
+    "author": "sanaseppo",
+    "url": "asdfasdfasd",
+    "likes": 70
+}
