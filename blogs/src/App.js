@@ -6,14 +6,15 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { useDispatch } from 'react-redux'
+import { setNotification, setError } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState('')
-  const [notificationType, setNotificationType] = useState('')
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -35,38 +36,21 @@ const App = () => {
         username,
         password
       })
-      console.log('Logged in: ', user)
+      dispatch(setNotification(`Logged in as ${user.username}`, 3))
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
-      displayError(exception.response.data.error)
+      dispatch(setError(exception.response.data.error, 3))
     }
   }
 
   const logout = () => {
     window.localStorage.removeItem('loggedUser')
     setUser(null)
-  }
-
-  const displayError = (message) => {
-    setNotification(message)
-    setNotificationType('error')
-    setTimeout(() => {
-      setNotification(null)
-      setNotificationType(null)
-    }, 4000)
-  }
-
-  const displayNotification = (message) => {
-    setNotification(message)
-    setNotificationType('notification')
-    setTimeout(() => {
-      setNotification(null)
-      setNotificationType(null)
-    }, 4000)
+    dispatch(setNotification('Logged out', 3))
   }
 
   const removeBlogWithId = (id) => {
@@ -79,20 +63,17 @@ const App = () => {
       const result = await blogService.create({ title, author, url })
       result.user = user
       setBlogs(blogs.concat(result))
-      displayNotification(`a new blog ${title} by ${author} added`)
+      dispatch(setNotification(`a new blog ${title} by ${author} added`, 3))
       return true
     } catch (error) {
-      displayError(error.response.data.error)
+      dispatch(setError(error.response.data.error))
       return false
     }
   }
 
   return (
     <div>
-      <Notification
-        message={notification}
-        notificationClass={notificationType}
-      />
+      <Notification />
       {user === null && (
         <div>
           <h2>Log in</h2>
@@ -114,8 +95,6 @@ const App = () => {
           </p>
           <Togglable buttonLabel="show blog form">
             <BlogForm
-              displayError={displayError}
-              displayNotification={displayNotification}
               user={user}
               setBlogs={setBlogs}
               blogs={blogs}
@@ -134,8 +113,6 @@ const App = () => {
             blog={blog}
             user={user}
             removeBlogWithId={removeBlogWithId}
-            displayError={displayError}
-            displayNotification={displayNotification}
           />
         ))}
     </div>

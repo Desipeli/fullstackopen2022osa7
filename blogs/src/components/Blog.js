@@ -1,13 +1,10 @@
 import { useState } from 'react'
+import { setNotification, setError } from '../reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 import blogService from '../services/blogs'
 
-const Blog = ({
-  blog,
-  user,
-  removeBlogWithId,
-  displayNotification,
-  displayError
-}) => {
+const Blog = ({ blog, user, removeBlogWithId }) => {
+  const dispatch = useDispatch()
   const [showFullInfo, setShowFullInfo] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
@@ -33,12 +30,12 @@ const Blog = ({
     try {
       const response = await blogService.removeBlog(blog.id)
       if (response.status === 204) {
-        displayNotification(`Removed ${blog.title} ${blog.author}`)
+        dispatch(setNotification(`Removed ${blog.title} ${blog.author}`, 3))
         removeBlogWithId(blog.id)
       }
     } catch (exception) {
       console.log(exception.response.data.error)
-      displayError(exception.response.data.error)
+      dispatch(setError(exception.response.data.error), 3)
     }
   }
 
