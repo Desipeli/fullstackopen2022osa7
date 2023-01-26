@@ -5,16 +5,19 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification, setError } from './reducers/notificationReducer'
 import { addManyBlogs, addNewBlog } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
+import { setUser, removeUser } from './reducers/userReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  // const [user, setUser] = useState(null)
   const dispatch = useDispatch()
+  const userSelector = (state) => state.user
+  const user = useSelector(userSelector)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => dispatch(addManyBlogs(blogs)))
@@ -24,9 +27,9 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setUser(user))
     }
-  }, [])
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -39,7 +42,7 @@ const App = () => {
       dispatch(setNotification(`Logged in as ${user.username}`, 3))
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      dispatch(setUser(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -49,7 +52,7 @@ const App = () => {
 
   const logout = () => {
     window.localStorage.removeItem('loggedUser')
-    setUser(null)
+    dispatch(removeUser())
     dispatch(setNotification('Logged out', 3))
   }
 
@@ -90,12 +93,12 @@ const App = () => {
             {user.username} logged in <button onClick={logout}>log out</button>
           </p>
           <Togglable buttonLabel="show blog form">
-            <BlogForm user={user} sendBlog={sendBlog} />
+            <BlogForm sendBlog={sendBlog} />
           </Togglable>
         </div>
       )}
 
-      <BlogList user={user} />
+      <BlogList />
     </div>
   )
 }
