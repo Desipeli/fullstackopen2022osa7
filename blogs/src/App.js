@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
@@ -8,17 +7,18 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useDispatch } from 'react-redux'
 import { setNotification, setError } from './reducers/notificationReducer'
+import { addManyBlogs, addNewBlog } from './reducers/blogReducer'
+import BlogList from './components/BlogList'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    blogService.getAll().then((blogs) => dispatch(addManyBlogs(blogs)))
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -53,16 +53,12 @@ const App = () => {
     dispatch(setNotification('Logged out', 3))
   }
 
-  const removeBlogWithId = (id) => {
-    setBlogs(blogs.filter((b) => b.id !== id))
-  }
-
   const sendBlog = async ({ title, author, url }) => {
     blogService.setToken(user.token)
     try {
       const result = await blogService.create({ title, author, url })
       result.user = user
-      setBlogs(blogs.concat(result))
+      dispatch(addNewBlog(result))
       dispatch(setNotification(`a new blog ${title} by ${author} added`, 3))
       return true
     } catch (error) {
@@ -94,27 +90,12 @@ const App = () => {
             {user.username} logged in <button onClick={logout}>log out</button>
           </p>
           <Togglable buttonLabel="show blog form">
-            <BlogForm
-              user={user}
-              setBlogs={setBlogs}
-              blogs={blogs}
-              sendBlog={sendBlog}
-            />
+            <BlogForm user={user} sendBlog={sendBlog} />
           </Togglable>
         </div>
       )}
-      {blogs
-        .sort((a, b) => {
-          return b.likes - a.likes
-        })
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            user={user}
-            removeBlogWithId={removeBlogWithId}
-          />
-        ))}
+
+      <BlogList user={user} />
     </div>
   )
 }
