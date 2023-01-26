@@ -50,9 +50,7 @@ export const deleteBlogWithId = (id) => {
 export const like = (blog) => {
   return async (dispatch) => {
     const res = await blogService.like(blog)
-    console.log(res.status)
     if (res.status === 200) {
-      console.log(res)
       dispatch(likeBlog(res.data))
     }
   }
