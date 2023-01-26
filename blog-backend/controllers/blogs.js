@@ -65,7 +65,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
 
     const updated = await Blog.findByIdAndUpdate(request.params.id, blog, {new: true, runValidators: true})
     if (updated) {
-        response.status(204).json(updated)
+        response.json(updated)
     } else {
         response.status(404).json({error: 'no blogs with given id'})
     }

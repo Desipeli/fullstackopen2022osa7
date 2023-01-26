@@ -20,7 +20,7 @@ const create = async (newObject) => {
   return response.data
 }
 
-const like = async ({ modifiedBlog }) => {
+const like = async (modifiedBlog) => {
   const blog = modifiedBlog
 
   const response = await axios.put(`${baseUrl}/${blog.id}`, {
@@ -31,7 +31,7 @@ const like = async ({ modifiedBlog }) => {
     user: blog.user.id
   })
 
-  return response.data
+  return response
 }
 
 const removeBlog = async (id) => {

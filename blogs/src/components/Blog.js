@@ -2,22 +2,20 @@ import { useState } from 'react'
 import { setNotification, setError } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import blogService from '../services/blogs'
-import { deleteBlogWithId } from '../reducers/blogReducer'
+import { deleteBlogWithId, like } from '../reducers/blogReducer'
 
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch()
   const [showFullInfo, setShowFullInfo] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
 
   const clickHandler = () => {
     setShowFullInfo(!showFullInfo)
   }
 
   const likeHandler = async () => {
-    const modifiedBlog = { ...blog, likes: likes }
+    const modifiedBlog = { ...blog, likes: blog.likes }
     try {
-      const sendLike = await blogService.like({ modifiedBlog })
-      setLikes(sendLike.likes)
+      dispatch(like(modifiedBlog))
     } catch (exception) {
       console.log(exception.response.data.error)
     }
@@ -47,7 +45,7 @@ const Blog = ({ blog, user }) => {
           <br></br>
           {blog.url}
           <br></br>
-          {likes}{' '}
+          {blog.likes}{' '}
           <button className="like-button" onClick={() => likeHandler()}>
             like
           </button>
