@@ -66,7 +66,7 @@ const App = () => {
       dispatch(setNotification(`a new blog ${title} by ${author} added`, 3))
       return true
     } catch (error) {
-      dispatch(setError(error.response.data.error))
+      dispatch(setError(error.response.data.error, 3))
       return false
     }
   }
