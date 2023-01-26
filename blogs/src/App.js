@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification, setError } from './reducers/notificationReducer'
-import { addManyBlogs, addNewBlog } from './reducers/blogReducer'
+import { addManyBlogs } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
 import { setUser, removeUser } from './reducers/userReducer'
+import { Routes, Route } from 'react-router-dom'
+import Users from './components/Users.js'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -56,20 +56,6 @@ const App = () => {
     dispatch(setNotification('Logged out', 3))
   }
 
-  const sendBlog = async ({ title, author, url }) => {
-    blogService.setToken(user.token)
-    try {
-      const result = await blogService.create({ title, author, url })
-      result.user = user
-      dispatch(addNewBlog(result))
-      dispatch(setNotification(`a new blog ${title} by ${author} added`, 3))
-      return true
-    } catch (error) {
-      dispatch(setError(error.response.data.error, 3))
-      return false
-    }
-  }
-
   return (
     <div>
       <Notification />
@@ -92,13 +78,12 @@ const App = () => {
             {' '}
             {user.username} logged in <button onClick={logout}>log out</button>
           </p>
-          <Togglable buttonLabel="show blog form">
-            <BlogForm sendBlog={sendBlog} />
-          </Togglable>
         </div>
       )}
-
-      <BlogList />
+      <Routes>
+        <Route path="/" element={<BlogList />} />
+        <Route path="/users" element={<Users />} />
+      </Routes>
     </div>
   )
 }

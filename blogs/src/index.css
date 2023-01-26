@@ -27,3 +27,11 @@
 .blog-first-row:hover {
   cursor: pointer;
 }
+
+/*Userlist*/
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  max-width: 500px;
+}
