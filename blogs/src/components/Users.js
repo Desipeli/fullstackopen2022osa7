@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import userService from '../services/users'
+import { Link } from 'react-router-dom'
 
 const Users = () => {
   const [users, setUsers] = useState([])
@@ -28,7 +29,9 @@ const Users = () => {
       </div>
       {usersInOrder.map((user) => (
         <div className="wrapper" key={user.id}>
-          <p>{user.username}</p>
+          <p>
+            <Link to={`/users/${user.id}`}>{user.username}</Link>
+          </p>
           <p>{user.blogs.length}</p>
         </div>
       ))}
