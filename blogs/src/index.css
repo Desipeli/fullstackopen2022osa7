@@ -35,3 +35,14 @@
   grid-template-columns: 2fr 1fr;
   max-width: 500px;
 }
+
+/*navbar*/
+
+#navbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+#navbar #links a {
+  padding-right: 20px;
+}
